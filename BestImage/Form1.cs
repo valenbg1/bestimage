@@ -86,6 +86,11 @@ namespace BestImage
 
             return true;
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutDialog().ShowDialog();
+        }
     }
 
     public class ImageFinder
