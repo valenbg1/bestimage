@@ -28,8 +28,8 @@ namespace BestImage
             PreferencesSaver.loadPreferences(out prefPath, out this.heightRef, out this.widthRef);
 
             this.textBox1.Text = prefPath;
-            this.textBox2.Text = this.heightRef.ToString();
-            this.textBox3.Text = this.widthRef.ToString();
+            this.numericUpDown1.Text = this.heightRef.ToString();
+            this.numericUpDown2.Text = this.widthRef.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -82,7 +82,7 @@ namespace BestImage
 
             try
             {
-                heightRef = UInt16.Parse(textBox2.Text);
+                heightRef = UInt16.Parse(numericUpDown1.Text);
             }
             catch
             {
@@ -91,7 +91,7 @@ namespace BestImage
 
             try
             {
-                widthRef = UInt16.Parse(textBox3.Text);
+                widthRef = UInt16.Parse(numericUpDown2.Text);
             }
             catch
             {
