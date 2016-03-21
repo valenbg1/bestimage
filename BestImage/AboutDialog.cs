@@ -16,5 +16,10 @@ namespace BestImage
         {
             InitializeComponent();
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.gnu.org/licenses/gpl-3.0.txt");
+        }
     }
 }
