@@ -56,7 +56,7 @@ namespace BestImage
                                     prefReader.Read();
                                     widthRef = UInt16.Parse(prefReader.Value);
                                     break;
-                            } 
+                            }
                         }
                     }
                 }
