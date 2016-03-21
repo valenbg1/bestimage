@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Tesseract;
 
 namespace BestImage
 {
@@ -51,8 +52,16 @@ namespace BestImage
                     .bestImage();
 
                 if (bestImg != null)
-                    MessageBox.Show("The image with better size is " + bestImg.FullName, "Result",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                {
+                    Image img = Image.FromFile(bestImg.FullName);
+                    Scew scew;
+                    Pix.LoadFromFile(bestImg.FullName).Deskew(out scew);
+
+                    MessageBox.Show("The image with better size is " +
+                                    bestImg.FullName + ".\n\n" + "Resolution: " + img.Width + "x" +
+                                    img.Height + "; skew angle: " + scew.Angle + ".", "Result",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 else
                     MessageBox.Show("No image found", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

@@ -13,7 +13,7 @@ namespace BestImage
 {
     public class ImageFinder
     {
-        public const double ratio_threshold = 0.05;
+        public const double area_threshold = 0.05;
 
         private DirectoryInfo dir;
         private int imgAreaRef;
@@ -22,8 +22,7 @@ namespace BestImage
         private FileInfo bestImg;
         private int bestArea;
         private double bestRatio;
-
-        //private List<Scew> scewList;
+        private float bestSkew;
 
         public ImageFinder(DirectoryInfo dir, int imgAreaRef, double imgRatioRef)
         {
@@ -33,8 +32,7 @@ namespace BestImage
 
             this.bestArea = 0;
             this.bestRatio = 0;
-
-            //this.scewList = new List<Scew>(); 
+            this.bestSkew = float.MaxValue;
         }
 
         private void setBestImageInDir(DirectoryInfo dir)
@@ -55,20 +53,18 @@ namespace BestImage
                 int imgArea = img.Height * img.Width;
                 double imgRatio = ((double)img.Width) / ((double)img.Height);
 
-                if ((Math.Abs(imgRatioRef - imgRatio) <= Math.Abs(imgRatioRef - bestRatio)) &&
-                    ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - ratio_threshold)) <= ((double)Math.Abs(imgAreaRef - bestArea))))
+                Scew scew;
+                Pix.LoadFromFile(file.FullName).Deskew(out scew);
+
+                if ((Math.Abs(scew.Angle) <= Math.Abs(bestSkew)) &&
+                    ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - area_threshold)) <= ((double)Math.Abs(imgAreaRef - bestArea))) &&
+                    (Math.Abs(imgRatioRef - imgRatio) <= Math.Abs(imgRatioRef - bestRatio)))
                 {
                     bestArea = imgArea;
                     bestRatio = imgRatio;
+                    bestSkew = scew.Angle;
                     bestImg = file;
                 }
-
-                Scew scew;
-
-                Pix imgP = Pix.LoadFromFile(file.FullName);
-                imgP.Deskew(out scew);
-
-                //scewList.Add(scew);
             }
         }
 
@@ -79,25 +75,7 @@ namespace BestImage
             foreach (DirectoryInfo childDir in dir.EnumerateDirectories())
                 setBestImageInDir(childDir);
 
-            imageSkew();
-
             return bestImg;
-        }
-
-        private void imageSkew()
-        {
-            //string scews = "Scew angles\tConfidences";
-            //int i = 0;
-
-            //foreach (Scew scew in scewList)
-            //{
-            //    scews += "\n" + scew.Angle + "\t\t" + scew.Confidence;
-
-            //    if (++i % 3 == 0)
-            //        scews += "\n";
-            //}
-
-            //MessageBox.Show(scews, "Scew angles", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
