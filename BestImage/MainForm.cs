@@ -11,18 +11,24 @@ using System.Windows.Forms;
 
 namespace BestImage
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private FolderBrowserDialog folderBrowserDialog;
         private int heightRef;
         private int widthRef;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             this.folderBrowserDialog = new FolderBrowserDialog();
-            this.heightRef = 0;
-            this.widthRef = 0;
+
+            string prefPath;
+
+            PreferencesSaver.loadPreferences(out prefPath, out this.heightRef, out this.widthRef);
+
+            this.textBox1.Text = prefPath;
+            this.textBox2.Text = this.heightRef.ToString();
+            this.textBox3.Text = this.widthRef.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -46,6 +52,8 @@ namespace BestImage
                 else
                     MessageBox.Show("No image found", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                PreferencesSaver.savePreferences(textBox1.Text, heightRef, widthRef);
             }
             else
                 MessageBox.Show("Incorrect arguments", "Result",
@@ -59,11 +67,13 @@ namespace BestImage
                 try
                 {
                     new DirectoryInfo(textBox1.Text);
-                } catch
+                }
+                catch
                 {
                     return false;
                 }
-            } else
+            }
+            else
                 return false;
 
             try
@@ -90,67 +100,6 @@ namespace BestImage
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutDialog().ShowDialog();
-        }
-    }
-
-    public class ImageFinder
-    {
-        public const double ratio_threshold = 0.05;
-
-        private DirectoryInfo dir;
-        private int imgAreaRef;
-        private double imgRatioRef;
-
-        private FileInfo bestImg;
-        private int bestArea;
-        private double bestRatio;
-
-        public ImageFinder(DirectoryInfo dir, int imgAreaRef, double imgRatioRef)
-        {
-            this.dir = dir;
-            this.imgAreaRef = imgAreaRef;
-            this.imgRatioRef = imgRatioRef;
-
-            this.bestArea = 0;
-            this.bestRatio = 0;
-        }
-
-        private void setBestImageInDir(DirectoryInfo dir)
-        {
-            foreach (FileInfo file in dir.EnumerateFiles())
-            {
-                Image img;
-
-                try
-                {
-                    img = Image.FromFile(file.FullName);
-                }
-                catch
-                {
-                    continue;
-                }
-
-                int imgArea = img.Height * img.Width;
-                double imgRatio = ((double)img.Width) / ((double)img.Height);
-
-                if ((Math.Abs(imgRatioRef - imgRatio) <= Math.Abs(imgRatioRef - bestRatio)) &&
-                    ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - ratio_threshold)) <= ((double)Math.Abs(imgAreaRef - bestArea))))
-                {
-                    bestArea = imgArea;
-                    bestRatio = imgRatio;
-                    bestImg = file;
-                }
-            }
-        }
-
-        public FileInfo bestImage()
-        {
-            setBestImageInDir(dir);
-
-            foreach (DirectoryInfo childDir in dir.EnumerateDirectories())
-                setBestImageInDir(childDir);
-
-            return bestImg;
         }
     }
 }
