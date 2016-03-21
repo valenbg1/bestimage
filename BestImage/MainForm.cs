@@ -41,6 +41,8 @@ namespace BestImage
 
         private void button2_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             if (checkAndSetArguments())
             {
                 FileInfo bestImg = new ImageFinder(new DirectoryInfo(textBox1.Text),
@@ -60,6 +62,8 @@ namespace BestImage
             else
                 MessageBox.Show("Incorrect arguments", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            Cursor.Current = Cursors.Default;
         }
 
         private bool checkAndSetArguments()

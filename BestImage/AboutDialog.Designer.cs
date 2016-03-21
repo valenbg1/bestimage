@@ -87,7 +87,7 @@
             this.linkLabel4.Location = new System.Drawing.Point(63, 90);
             this.linkLabel4.Name = "linkLabel4";
             this.linkLabel4.Size = new System.Drawing.Size(294, 48);
-            this.linkLabel4.TabIndex = 5;
+            this.linkLabel4.TabIndex = 2;
             this.linkLabel4.TabStop = true;
             this.linkLabel4.Text = "Simple application that selects the best image\r\nfile from a folder, based on size" +
     " and skew angle.\r\nUses charlesw\'s .NET wrapper for tesseract-ocr.";
