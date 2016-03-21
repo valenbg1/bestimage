@@ -21,5 +21,10 @@ namespace BestImage
         {
             System.Diagnostics.Process.Start("http://www.gnu.org/licenses/gpl-3.0.txt");
         }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://github.com/valenbg1/bestimage");
+        }
     }
 }
