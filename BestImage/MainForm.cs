@@ -33,6 +33,8 @@ namespace BestImage
 
         private void button1_Click(object sender, EventArgs e)
         {
+            folderBrowserDialog.SelectedPath = textBox1.Text;
+
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 textBox1.Text = folderBrowserDialog.SelectedPath;
         }
@@ -62,18 +64,7 @@ namespace BestImage
 
         private bool checkAndSetArguments()
         {
-            if (textBox1.Text != "")
-            {
-                try
-                {
-                    new DirectoryInfo(textBox1.Text);
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
+            if (!new DirectoryInfo(textBox1.Text).Exists)
                 return false;
 
             try
