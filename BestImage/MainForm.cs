@@ -46,10 +46,13 @@ namespace BestImage
 
             if (checkAndSetArguments())
             {
-                FileInfo bestImg = new ImageFinder(new DirectoryInfo(textBox1.Text),
+                FileInfo bestImg = new ImageFinder(this,
+                    new DirectoryInfo(textBox1.Text),
                     heightRef * widthRef,
                     ((double)widthRef) / ((double)heightRef))
                     .bestImage();
+
+                progressBar1.Value = progressBar1.Maximum;
 
                 if (bestImg != null)
                 {
@@ -72,6 +75,8 @@ namespace BestImage
                 MessageBox.Show("Incorrect arguments", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+            GC.Collect();
+            progressBar1.Value = 0;
             Cursor.Current = Cursors.Default;
         }
 
@@ -82,7 +87,7 @@ namespace BestImage
 
             try
             {
-                heightRef = UInt16.Parse(numericUpDown1.Text);
+                heightRef = Int32.Parse(numericUpDown1.Text);
             }
             catch
             {
@@ -91,7 +96,7 @@ namespace BestImage
 
             try
             {
-                widthRef = UInt16.Parse(numericUpDown2.Text);
+                widthRef = Int32.Parse(numericUpDown2.Text);
             }
             catch
             {
@@ -104,6 +109,16 @@ namespace BestImage
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutDialog().ShowDialog();
+        }
+
+        public void incProgressBar()
+        {
+            progressBar1.Increment(1);
+        }
+
+        public void setProgressBarMaxValue(int maxValue)
+        {
+            progressBar1.Maximum = maxValue;
         }
     }
 }

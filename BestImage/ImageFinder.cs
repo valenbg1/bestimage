@@ -15,6 +15,8 @@ namespace BestImage
     {
         public const double area_threshold = 0.05;
 
+        private MainForm mform;
+
         private DirectoryInfo dir;
         private int imgAreaRef;
         private double imgRatioRef;
@@ -24,8 +26,10 @@ namespace BestImage
         private double bestRatio;
         private float bestSkew;
 
-        public ImageFinder(DirectoryInfo dir, int imgAreaRef, double imgRatioRef)
+        public ImageFinder(MainForm mform, DirectoryInfo dir, int imgAreaRef, double imgRatioRef)
         {
+            this.mform = mform;
+
             this.dir = dir;
             this.imgAreaRef = imgAreaRef;
             this.imgRatioRef = imgRatioRef;
@@ -35,10 +39,19 @@ namespace BestImage
             this.bestSkew = float.MaxValue;
         }
 
-        private void setBestImageInDir(DirectoryInfo dir)
+        public FileInfo bestImage()
         {
-            foreach (FileInfo file in dir.EnumerateFiles())
+            FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories);
+            mform.setProgressBarMaxValue(files.Length);
+            int i = 0;
+
+            foreach (FileInfo file in files)
             {
+                if (i++ % 10 == 0)
+                    GC.Collect();
+
+                mform.incProgressBar();
+
                 Image img;
 
                 try
@@ -57,8 +70,8 @@ namespace BestImage
                 Pix.LoadFromFile(file.FullName).Deskew(out scew);
 
                 if ((Math.Abs(scew.Angle) <= Math.Abs(bestSkew)) &&
-                    ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - area_threshold)) <= ((double)Math.Abs(imgAreaRef - bestArea))) &&
-                    (Math.Abs(imgRatioRef - imgRatio) <= Math.Abs(imgRatioRef - bestRatio)))
+                    ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - area_threshold)) < ((double)Math.Abs(imgAreaRef - bestArea))) &&
+                    (Math.Abs(imgRatioRef - imgRatio) < Math.Abs(imgRatioRef - bestRatio)))
                 {
                     bestArea = imgArea;
                     bestRatio = imgRatio;
@@ -66,14 +79,7 @@ namespace BestImage
                     bestImg = file;
                 }
             }
-        }
 
-        public FileInfo bestImage()
-        {
-            setBestImageInDir(dir);
-
-            foreach (DirectoryInfo childDir in dir.EnumerateDirectories())
-                setBestImageInDir(childDir);
 
             return bestImg;
         }
