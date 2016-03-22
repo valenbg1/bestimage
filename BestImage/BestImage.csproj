@@ -66,6 +66,12 @@
     <Compile Include="BestImage.cs" />
     <Compile Include="PreferencesSaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResultDialog.Designer.cs">
+      <DependentUpon>ResultDialog.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -81,6 +87,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ResultDialog.resx">
+      <DependentUpon>ResultDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

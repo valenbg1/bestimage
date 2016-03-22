@@ -55,16 +55,7 @@ namespace BestImage
                 progressBar1.Value = progressBar1.Maximum;
 
                 if (bestImg != null)
-                {
-                    Image img = Image.FromFile(bestImg.FullName);
-                    Scew scew;
-                    Pix.LoadFromFile(bestImg.FullName).Deskew(out scew);
-
-                    MessageBox.Show("The image with better size is " +
-                                    bestImg.FullName + ".\n\n" + "Resolution: " + img.Width + "x" +
-                                    img.Height + "; skew angle: " + scew.Angle + ".", "Result",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                    new ResultDialog(bestImg).ShowDialog();
                 else
                     MessageBox.Show("No image found", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
