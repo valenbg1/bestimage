@@ -14,9 +14,13 @@ namespace BestImage
 {
     public partial class ResultDialog : Form
     {
+        FileInfo fimg;
+
         public ResultDialog(FileInfo fimg)
         {
             InitializeComponent();
+
+            this.fimg = fimg;
 
             Image img = Image.FromFile(fimg.FullName);
             Scew scew;
@@ -26,6 +30,11 @@ namespace BestImage
             textBox1.Text = "The best image found is:\r\n" +
                             fimg.FullName + ".\r\n" + "Resolution: " + img.Width + "x" +
                             img.Height + "; skew angle: " + scew.Angle + ".";
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer", "/select, " + fimg.FullName);
         }
     }
 }
