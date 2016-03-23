@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tesseract;
-using System.IO;
+using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Collections;
+using System.IO;
+using Tesseract;
 
 namespace BestImage
 {
@@ -39,14 +34,14 @@ namespace BestImage
             this.bestSkew = float.MaxValue;
         }
 
-        public FileInfo bestImage()
+        public void bestImage(object sender, DoWorkEventArgs e)
         {
             FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories);
-            mform.setProgressBarMaxValue(files.Length);
+            mform.SetProgressBarMaxValue(files.Length);
 
             foreach (FileInfo file in files)
             {
-                mform.incProgressBar();
+                mform.IncProgressBar();
 
                 Image img;
 
@@ -81,7 +76,7 @@ namespace BestImage
                 pix2.Dispose();
             }
 
-            return bestImg;
+            e.Result = bestImg;
         }
     }
 }

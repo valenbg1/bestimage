@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Tesseract;
 
 namespace BestImage
 {
     public partial class MainForm : Form
     {
+        delegate void SetProgressBarMaxValueCallback(int maxValue);
+        delegate void IncProgressBarCallback();
+
         private FolderBrowserDialog folderBrowserDialog;
         private int heightRef;
         private int widthRef;
@@ -32,6 +28,11 @@ namespace BestImage
             this.numericUpDown2.Text = this.widthRef.ToString();
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutDialog().ShowDialog();
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             folderBrowserDialog.SelectedPath = textBox1.Text;
@@ -43,37 +44,28 @@ namespace BestImage
         private void button2_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            this.Enabled = false;
+            button2.Enabled = false;
 
-            if (checkAndSetArguments())
+            if (CheckAndSetArguments())
             {
-                FileInfo bestImg = new ImageFinder(this,
+                ImageFinder imgFinder = new ImageFinder(this,
                     new DirectoryInfo(textBox1.Text),
                     heightRef * widthRef,
-                    ((double)widthRef) / ((double)heightRef))
-                    .bestImage();
+                    ((double)widthRef) / ((double)heightRef));
 
-                progressBar1.Value = progressBar1.Maximum;
-
-                if (bestImg != null)
-                    new ResultDialog(bestImg).ShowDialog();
-                else
-                    MessageBox.Show("No image found", "Result",
-                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                BackgroundWorker bgw = new BackgroundWorker();
+                bgw.DoWork += new DoWorkEventHandler(imgFinder.bestImage);
+                bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ShowResult);
+                bgw.RunWorkerAsync();
 
                 PreferencesSaver.savePreferences(textBox1.Text, heightRef, widthRef);
             }
             else
                 MessageBox.Show("Incorrect arguments", "Result",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            GC.Collect();
-            progressBar1.Value = 0;
-            Cursor.Current = Cursors.Default;
-            this.Enabled = true;
         }
 
-        private bool checkAndSetArguments()
+        private bool CheckAndSetArguments()
         {
             if (!new DirectoryInfo(textBox1.Text).Exists)
                 return false;
@@ -99,19 +91,39 @@ namespace BestImage
             return true;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        public void IncProgressBar()
         {
-            new AboutDialog().ShowDialog();
+            if (progressBar1.InvokeRequired)
+                Invoke(new IncProgressBarCallback(IncProgressBar));
+            else
+                progressBar1.Increment(1);
         }
 
-        public void incProgressBar()
+        public void SetProgressBarMaxValue(int maxValue)
         {
-            progressBar1.Increment(1);
+            if (progressBar1.InvokeRequired)
+            {
+                Invoke(new SetProgressBarMaxValueCallback(SetProgressBarMaxValue),
+                        new object[] { maxValue });
+            }
+            else
+                progressBar1.Maximum = maxValue;
         }
 
-        public void setProgressBarMaxValue(int maxValue)
+        private void ShowResult(object sender, RunWorkerCompletedEventArgs e)
         {
-            progressBar1.Maximum = maxValue;
+            progressBar1.Value = progressBar1.Maximum;
+
+            if (e.Result != null)
+                new ResultDialog((FileInfo)e.Result).ShowDialog();
+            else
+                MessageBox.Show("No image found", "Result",
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            GC.Collect();
+            progressBar1.Value = 0;
+            Cursor.Current = Cursors.Default;
+            button2.Enabled = true;
         }
     }
 }
