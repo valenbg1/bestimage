@@ -41,6 +41,12 @@ namespace BestImage
 
             foreach (FileInfo file in files)
             {
+                if (((BackgroundWorker)sender).CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
                 mform.IncProgressBar();
 
                 Image img;

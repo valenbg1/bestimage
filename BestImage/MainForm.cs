@@ -9,6 +9,7 @@ namespace BestImage
     {
         delegate void SetProgressBarMaxValueCallback(int maxValue);
         delegate void IncProgressBarCallback();
+        private BackgroundWorker bgw;
 
         private FolderBrowserDialog folderBrowserDialog;
         private int heightRef;
@@ -17,6 +18,7 @@ namespace BestImage
         public MainForm()
         {
             InitializeComponent();
+
             this.folderBrowserDialog = new FolderBrowserDialog();
 
             string prefPath;
@@ -53,7 +55,7 @@ namespace BestImage
                     heightRef * widthRef,
                     ((double)widthRef) / ((double)heightRef));
 
-                BackgroundWorker bgw = new BackgroundWorker();
+                bgw = new BackgroundWorker();
                 bgw.DoWork += new DoWorkEventHandler(imgFinder.bestImage);
                 bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ShowResult);
                 bgw.RunWorkerAsync();
@@ -91,6 +93,12 @@ namespace BestImage
             return true;
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (bgw != null)
+            //    bgw.CancelAsync();
+        }
+
         public void IncProgressBar()
         {
             if (progressBar1.InvokeRequired)
@@ -112,6 +120,9 @@ namespace BestImage
 
         private void ShowResult(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (e.Cancelled)
+                return;
+
             progressBar1.Value = progressBar1.Maximum;
 
             if (e.Result != null)

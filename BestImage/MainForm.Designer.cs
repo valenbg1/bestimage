@@ -181,6 +181,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "BestImage";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
