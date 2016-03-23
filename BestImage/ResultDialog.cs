@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -30,16 +31,28 @@ namespace BestImage
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            this.Enabled = false;
+            this.UseWaitCursor = true;
+            pictureBox1.Enabled = false;
 
-            Process expl = new Process();
-            expl.StartInfo = new ProcessStartInfo("explorer", "/select, " + fimg.FullName);
-            expl.Start();
-            expl.WaitForInputIdle();
+            BackgroundWorker bgw = new BackgroundWorker();
 
-            Cursor.Current = Cursors.Default;
-            this.Enabled = true;
+            bgw.DoWork += new DoWorkEventHandler(
+                delegate (object se, DoWorkEventArgs ev)
+                {
+                    Process expl = new Process();
+                    expl.StartInfo = new ProcessStartInfo("explorer", "/select, " + fimg.FullName);
+                    expl.Start();
+                    expl.WaitForInputIdle();
+                });
+
+            bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                delegate (object se, RunWorkerCompletedEventArgs ev)
+                {
+                    this.UseWaitCursor = false;
+                    pictureBox1.Enabled = true;
+                });
+
+            bgw.RunWorkerAsync();
         }
     }
 }

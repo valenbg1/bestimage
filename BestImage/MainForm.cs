@@ -43,11 +43,11 @@ namespace BestImage
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            button2.Enabled = false;
-
             if (CheckAndSetArguments())
             {
+                this.UseWaitCursor = true;
+                button2.Enabled = false;
+
                 ImageFinder imgFinder = new ImageFinder(this,
                     new DirectoryInfo(textBox1.Text),
                     heightRef * widthRef,
@@ -122,7 +122,7 @@ namespace BestImage
 
             GC.Collect();
             progressBar1.Value = 0;
-            Cursor.Current = Cursors.Default;
+            this.UseWaitCursor = false;
             button2.Enabled = true;
         }
     }
