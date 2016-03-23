@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Tesseract;
+using System.Diagnostics;
 
 namespace BestImage
 {
@@ -27,6 +28,7 @@ namespace BestImage
             Pix.LoadFromFile(fimg.FullName).Deskew(out scew);
 
             pictureBox1.Image = img;
+
             textBox1.Text = "The best image found is:\r\n" +
                             fimg.FullName + ".\r\n" + "Resolution: " + img.Width + "x" +
                             img.Height + "; skew angle: " + scew.Angle + ".";
@@ -34,7 +36,14 @@ namespace BestImage
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer", "/select, " + fimg.FullName);
+            Cursor.Current = Cursors.WaitCursor;
+
+            Process expl = new Process();
+            expl.StartInfo = new ProcessStartInfo("explorer", "/select, " + fimg.FullName);
+            expl.Start();
+            expl.WaitForInputIdle();
+
+            Cursor.Current = Cursors.Default;
         }
     }
 }

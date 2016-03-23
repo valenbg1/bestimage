@@ -43,6 +43,7 @@ namespace BestImage
         private void button2_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
+            this.Enabled = false;
 
             if (checkAndSetArguments())
             {
@@ -69,6 +70,7 @@ namespace BestImage
             GC.Collect();
             progressBar1.Value = 0;
             Cursor.Current = Cursors.Default;
+            this.Enabled = true;
         }
 
         private bool checkAndSetArguments()
