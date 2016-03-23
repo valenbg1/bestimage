@@ -43,13 +43,9 @@ namespace BestImage
         {
             FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories);
             mform.setProgressBarMaxValue(files.Length);
-            int i = 0;
 
             foreach (FileInfo file in files)
             {
-                if (i++ % 10 == 0)
-                    GC.Collect();
-
                 mform.incProgressBar();
 
                 Image img;
@@ -67,7 +63,8 @@ namespace BestImage
                 double imgRatio = ((double)img.Width) / ((double)img.Height);
 
                 Scew scew;
-                Pix.LoadFromFile(file.FullName).Deskew(out scew);
+                Pix pix1 = Pix.LoadFromFile(file.FullName);
+                Pix pix2 = pix1.Deskew(out scew);
 
                 if ((Math.Abs(scew.Angle) <= Math.Abs(bestSkew)) &&
                     ((((double)Math.Abs(imgAreaRef - imgArea)) * (1.0 - area_threshold)) < ((double)Math.Abs(imgAreaRef - bestArea))) &&
@@ -78,8 +75,11 @@ namespace BestImage
                     bestSkew = scew.Angle;
                     bestImg = file;
                 }
-            }
 
+                img.Dispose();
+                pix1.Dispose();
+                pix2.Dispose();
+            }
 
             return bestImg;
         }

@@ -37,6 +37,7 @@ namespace BestImage
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
+            this.Enabled = false;
 
             Process expl = new Process();
             expl.StartInfo = new ProcessStartInfo("explorer", "/select, " + fimg.FullName);
@@ -44,6 +45,7 @@ namespace BestImage
             expl.WaitForInputIdle();
 
             Cursor.Current = Cursors.Default;
+            this.Enabled = true;
         }
     }
 }

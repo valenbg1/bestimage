@@ -88,18 +88,18 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(69, 106);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 13);
+            this.label2.Size = new System.Drawing.Size(86, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Height reference:";
+            this.label2.Text = "Width reference:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(69, 153);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(86, 13);
+            this.label3.Size = new System.Drawing.Size(89, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Width reference:";
+            this.label3.Text = "Height reference:";
             // 
             // menuStrip1
             // 
@@ -128,7 +128,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(72, 122);
+            this.numericUpDown1.Location = new System.Drawing.Point(72, 169);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -141,7 +141,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(72, 170);
+            this.numericUpDown2.Location = new System.Drawing.Point(72, 122);
             this.numericUpDown2.Maximum = new decimal(new int[] {
             999999,
             0,
